@@ -60,6 +60,18 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 	}
 	//Requests page itself, instead of letting webshot do it, for the purpose of IP censoring
 	request(args[0], function(err, resp, body) {
+		if (body == undefined) {
+			var content = {
+				content: "",
+				embed: {
+					title: "SITE TOOK TOO LONG TO RESPOND",
+					type: "rich",
+					description: "The website `" + args[0] + "` took too long to respond.",
+					color: 16711680
+				}
+			}
+			return content
+		}
 		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace("98.203.233.130", "noip4u"); //Adds a base so CSS loads, and censors my IP address
 		var image = '';
 		var renderStream = webshot(cleaned, null, {
