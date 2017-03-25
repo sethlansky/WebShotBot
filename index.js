@@ -21,7 +21,7 @@ var helpCommand = bot.registerCommand("help", (msg, args) => {
 			title: "Web Shot Bot",
 			type: "rich",
 			description: "I am `Web Shot Bot`, a very simple bot. All I do is take screenshots of websites.",
-			fields: [{name: "Commands", value: "`$help` - This help command.\n`$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`$webshot <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}],
+			fields: [{name: "Commands", value: "`w$help` - This help command.\n`w$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`w$webshot <URL>` or `w$ws <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}],
 			color: 65280,
 			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/2e7016a63bbb8b18caffcea9f9ab54bb.webp?size=256"},
 			author: {name: "averysumner", url: "http://averysumner.net", icon_url: "https://cdn.discordapp.com/avatars/101475937589166080/2ebfd085d14e8446d8ae618d9382651c.webp?size=256"}
