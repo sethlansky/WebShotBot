@@ -10,7 +10,7 @@ var url_regex = new RegExp(url);
 var bot = new Eris.CommandClient(JSON.parse(fs.readFileSync('config.json')).token, {}, {
 	description: "A bot that takes screenshots of websites.",
 	owner: "averysumner",
-	prefix: "$",
+	prefix: "w$",
 	defaultHelpCommand : false
 });
 
