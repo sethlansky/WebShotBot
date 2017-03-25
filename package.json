@@ -1,0 +1,33 @@
+{
+  "name": "webshotbot",
+  "version": "1.0.0",
+  "description": "A discord bot that takes screenshots of websites, written in node.js with the Eris library.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/averysumner/WebShotBot.git"
+  },
+  "keywords": [
+    "webshot",
+    "eris",
+    "discord"
+  ],
+  "author": "averysumner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/averysumner/WebShotBot/issues"
+  },
+  "homepage": "https://github.com/averysumner/WebShotBot#readme",
+  "dependencies": {
+    "eris": "^0.6.0",
+    "node-rest-client": "^3.0.7",
+    "node-tesseract": "^0.2.7",
+    "sleep-async": "^1.0.1",
+    "stream-to": "^2.0.0",
+    "textract": "^2.1.1",
+    "webshot": "^0.18.0"
+  }
+}
