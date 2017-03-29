@@ -14,13 +14,17 @@ var bot = new Eris.CommandClient(JSON.parse(fs.readFileSync('config.json')).toke
 	defaultHelpCommand : false
 });
 
+bot.on("ready", function(){
+  bot.editStatus("online", {name : "w$help for help!"})
+});
+
 var helpCommand = bot.registerCommand("help", (msg, args) => {
 	var content = {
 		content: "",
 		embed: {
 			title: "Web Shot Bot",
 			type: "rich",
-			description: "I am `Web Shot Bot`, a very simple bot. All I do is take screenshots of websites.",
+			description: "I am `Web Shot Bot`, a very simple bot. All I do is take screenshots of websites. I am currently in `" + bot.guilds.size + '` guilds!',
 			fields: [{name: "Commands", value: "`w$help` - This help command.\n`w$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`w$webshot <URL>` or `w$ws <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}],
 			color: 65280,
 			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/2e7016a63bbb8b18caffcea9f9ab54bb.webp?size=256"},
@@ -45,6 +49,7 @@ var inviteCommand = bot.registerCommand("invite", (msg, args) => {
 });
 
 var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
+	console.log(msg.author.username + ': ' + args[0])
 	//Catches invalid arguments
 	if (args.length === 0 || !url_regex.test(args[0])) {
 		var content = {
@@ -72,7 +77,7 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 			}
 			return content
 		}
-		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace("98.203.233.130", "noip4u"); //Adds a base so CSS loads, and censors my IP address
+		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(/98\.203\.233\.130/g, "noip4u"); //Adds a base so CSS loads, and censors my IP address
 		var image = '';
 		var renderStream = webshot(cleaned, null, {
 			siteType: 'html'

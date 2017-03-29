@@ -25,6 +25,7 @@
     "eris": "^0.6.0",
     "node-rest-client": "^3.0.7",
     "node-tesseract": "^0.2.7",
+    "ocr": "^3.3.76",
     "sleep-async": "^1.0.1",
     "stream-to": "^2.0.0",
     "textract": "^2.1.1",
