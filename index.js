@@ -6,7 +6,7 @@ var stream = require('stream');
 
 var url = /^(ftp|http|https):\/\/[^ "]+$/;
 var url_regex = new RegExp(url);
-var dbotsToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxMDE0NzU5Mzc1ODkxNjYwODAiLCJyYW5kIjoxNDAsImlhdCI6MTQ3NjA2MDQxMH0.JrA6TwniVgC49OggeCHXH5R4L_c_udWpr0PyJqYLdAI";
+var dbotsToken = "dbotstokengoeshere";
 
 var bot = new Eris.CommandClient(JSON.parse(fs.readFileSync('config.json')).token, {}, {
 	description: "A bot that takes screenshots of websites.",
