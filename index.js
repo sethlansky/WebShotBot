@@ -6,6 +6,7 @@ var stream = require('stream');
 
 var url = /^(ftp|http|https):\/\/[^ "]+$/;
 var url_regex = new RegExp(url);
+var dbotsToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiIxMDE0NzU5Mzc1ODkxNjYwODAiLCJyYW5kIjoxNDAsImlhdCI6MTQ3NjA2MDQxMH0.JrA6TwniVgC49OggeCHXH5R4L_c_udWpr0PyJqYLdAI";
 
 var bot = new Eris.CommandClient(JSON.parse(fs.readFileSync('config.json')).token, {}, {
 	description: "A bot that takes screenshots of websites.",
@@ -15,7 +16,18 @@ var bot = new Eris.CommandClient(JSON.parse(fs.readFileSync('config.json')).toke
 });
 
 bot.on("ready", function(){
-  bot.editStatus("online", {name : "w$help for help!"})
+  bot.editStatus("online", {name : "w$help - " + bot.guilds.size + " servers"})
+  request({method : "POST", url : "https://bots.discord.pw/api/bots/" + bot.user.id + "/stats", headers : {"Authorization" : dbotsToken}, json : {server_count : bot.guilds.size}});
+});
+
+bot.on("guildCreate", function(){
+  bot.editStatus("online", {name : "w$help - " + bot.guilds.size + " servers"})
+  request({method : "POST", url : "https://bots.discord.pw/api/bots/" + bot.user.id + "/stats", headers : {"Authorization" : dbotsToken}, json : {server_count : bot.guilds.size}});
+});
+
+bot.on("guildLeave", function(){
+  bot.editStatus("online", {name : "w$help - " + bot.guilds.size + " servers"})
+  request({method : "POST", url : "https://bots.discord.pw/api/bots/" + bot.user.id + "/stats", headers : {"Authorization" : dbotsToken}, json : {server_count : bot.guilds.size}});
 });
 
 var helpCommand = bot.registerCommand("help", (msg, args) => {
