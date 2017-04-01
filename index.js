@@ -1,38 +1,22 @@
-var Eris = require("eris");
-var fs = require("fs");
-var webshot = require("webshot");
-var request = require("request");
-var express = require("express");
-var app = express();
-var stream = require('stream');
+var Eris = require("eris")
+var fs = require("fs")
+var webshot = require("webshot")
+var request = require("request")
+var stream = require('stream')
 
-var url = /^(ftp|http|https):\/\/[^ "]+$/;
-var url_regex = new RegExp(url);
-var dbotsToken = JSON.parse(fs.readFileSync('config.json')).dbotstoken;
-var dlToken = JSON.parse(fs.readFileSync('config.json')).discordlisttoken;
-
-app.listen(80);
-
-app.get('/servers', function (req, res) {
-  var resp = "<list>"
-  bot.guilds.forEach(function(server){
-    resp = resp + '<li>' + server.name + '</li>';
-  });
-  resp = resp + '</list>'
-  res.send(resp);
-})
+var urlRegex = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/)
+var config = JSON.parse(fs.readFileSync('config.json'))
+var ipRegex = new RegExp(config.ipregex)
 
 var bot = new Eris.CommandClient(JSON.parse(fs.readFileSync('config.json')).token, {}, {
-	description: "A bot that takes screenshots of websites.",
-	owner: "averysumner",
 	prefix: "w$",
 	defaultHelpCommand : false
 });
 
 function updateStats(bot) {
   bot.editStatus("online", {name : "w$help - " + bot.guilds.size + " servers"})
-  request({method : "POST", url : "https://bots.discord.pw/api/bots/" + bot.user.id + "/stats", headers : {"Authorization" : dbotsToken}, json : {server_count : bot.guilds.size}});
-  request({method : "POST", url : "https://bots.discordlist.net/api/", json : {token : dlToken, servers : bot.guilds.size}});
+  request({method : "POST", url : "https://bots.discord.pw/api/bots/" + bot.user.id + "/stats", headers : {"Authorization" : config.discordBotsToken}, json : {server_count : bot.guilds.size}})
+  request({method : "POST", url : "https://bots.discordlist.net/api/", json : {token : config.discordListToken, servers : bot.guilds.size}})
 }
 
 bot.on("ready", function(){
@@ -80,7 +64,7 @@ var inviteCommand = bot.registerCommand("invite", (msg, args) => {
 var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 	console.log(msg.author.username + ': ' + args[0])
 	//Catches invalid arguments
-	if (args.length === 0 || !url_regex.test(args[0])) {
+	if (args.length === 0 || !urlRegex.test(args[0])) {
 		var content = {
 			content: "",
 			embed: {
@@ -106,30 +90,24 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 			}
 			return content
 		}
-		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(/98\.203\.233\.130/g, "noip4u"); //Adds a base so CSS loads, and censors my IP address
+		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(ipRegex, "noip4u"); //Adds a base so CSS loads, and censors my IP address
 		var image = '';
 		var renderStream = webshot(cleaned, null, {
 			siteType: 'html'
-		}); //Streams webshot so you don't have to save it to disk
+		}) //Streams webshot so you don't have to save it to disk
 		renderStream.on('data', function(data) {
-			image += data.toString('binary');
-		});
+			image += data.toString('binary')
+		})
 		renderStream.on('end', function() {
 			image = new Buffer(image, "binary"); //Convert to buffer so Eris can use it.
 			bot.createMessage(msg.channel.id, "Here's your webshot of `" + args[0] + "`", {
 				file: image,
 				name: 'webshot.png'
 			})
-		});
-	});
-}, {
-	description: "Take a screenshot of any website.",
-	fullDescription: "The bot will send a message containing a screenshot of the specified url.",
-	usage: "<url>"
-});
+		})
+	})
+})
 
 bot.registerCommandAlias('ws', 'webshot');
-bot.registerCommandAlias('screenshot', 'webshot');
-bot.registerCommandAlias('ss', 'webshot');
 
 bot.connect();
