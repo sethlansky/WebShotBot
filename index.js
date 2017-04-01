@@ -12,7 +12,19 @@ var ipRegex = new RegExp(config.ipRegex, "g")
 var bot = new Eris.CommandClient(JSON.parse(fs.readFileSync('config.json')).token, {}, {
 	prefix: "w$",
 	defaultHelpCommand : false
-});
+})
+
+function parseFlags(msg, flags, cb) {
+	var flagValues = {}
+	flags.forEach(function(flag){
+		if (msg.content.indexOf('--' + flag) > -1) {
+			flagValues[flag] = msg.content.substring(msg.content.indexOf(flag), msg.content.length).split(' ')[1]
+		} else {
+			flagValues[flag] = 0
+		}
+	})
+	return cb(flagValues)
+}
 
 function updateStats(bot) {
   bot.editStatus("online", {name : "w$help - " + bot.guilds.size + " servers"})
@@ -63,7 +75,6 @@ var inviteCommand = bot.registerCommand("invite", (msg, args) => {
 })
 
 var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
-	console.log(msg.author.username + ': ' + args[0])
 	//Catches invalid arguments
 	if (args.length === 0 || !urlRegex.test(args[0])) {
 		var content = {
@@ -77,36 +88,40 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 		}
 		return content
 	}
-	//Requests page itself, instead of letting webshot do it, for the purpose of IP censoring
-	request(args[0], function(err, resp, body) {
-		try{
-			var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(ipRegex, "noip4u"); //Adds a base so CSS loads, and censors my IP address
-			var image = '';
-			var renderStream = webshot(cleaned, null, {
-				siteType: 'html'
-			}) //Streams webshot so you don't have to save it to disk
-			renderStream.on('data', function(data) {
-				image += data.toString('binary')
-			})
-			renderStream.on('end', function() {
-				image = new Buffer(image, "binary"); //Convert to buffer so Eris can use it.
-				bot.createMessage(msg.channel.id, "Here's your webshot of `" + args[0] + "`", {
-					file: image,
-					name: 'webshot.png'
+	parseFlags(msg, ["renderDelay"], function(flags){
+		console.log(msg.author.username + ': ' + args[0] + ' with a render delay of ' + flags.renderDelay)
+		//Requests page itself, instead of letting webshot do it, for the purpose of IP censoring
+		request(args[0], function(err, resp, body) {
+			try{
+				var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(ipRegex, "noip4u"); //Adds a base so CSS loads, and censors my IP address
+				var image = '';
+				var renderStream = webshot(cleaned, null, {
+					siteType: 'html',
+					renderDelay: flags.renderDelay*1000
+				}) //Streams webshot so you don't have to save it to disk
+				renderStream.on('data', function(data) {
+					image += data.toString('binary')
 				})
-			})
-		} catch (err) {
-			var content = {
-				content: "",
-				embed: {
-					title: "ERROR",
-					type: "rich",
-					description: "The specified website does not exist or returns an empty page.",
-					color: 16711680
+				renderStream.on('end', function() {
+					image = new Buffer(image, "binary"); //Convert to buffer so Eris can use it.
+					bot.createMessage(msg.channel.id, "Here's your webshot of `" + args[0] + "`", {
+						file: image,
+						name: 'webshot.png'
+					})
+				})
+			} catch (err) {
+				var content = {
+					content: "",
+					embed: {
+						title: "ERROR",
+						type: "rich",
+						description: "The specified website does not exist or returns an empty page.",
+						color: 16711680
+					}
 				}
+				bot.createMessage(msg.channel.id, content)
 			}
-			bot.createMessage(msg.channel.id, content)
-		}
+		})
 	})
 })
 
