@@ -2,6 +2,8 @@ var Eris = require("eris");
 var fs = require("fs");
 var webshot = require("webshot");
 var request = require("request");
+var express = require("express");
+var app = express();
 var stream = require('stream');
 
 var url = /^(ftp|http|https):\/\/[^ "]+$/;
@@ -9,6 +11,16 @@ var url_regex = new RegExp(url);
 var dbotsToken = JSON.parse(fs.readFileSync('config.json')).dbotstoken;
 var dlToken = JSON.parse(fs.readFileSync('config.json')).discordlisttoken;
 
+app.listen(80);
+
+app.get('/servers', function (req, res) {
+  var resp = "<list>"
+  bot.guilds.forEach(function(server){
+    resp = resp + '<li>' + server.name + '</li>';
+  });
+  resp = resp + '</list>'
+  res.send(resp);
+})
 
 var bot = new Eris.CommandClient(JSON.parse(fs.readFileSync('config.json')).token, {}, {
 	description: "A bot that takes screenshots of websites.",
@@ -43,7 +55,7 @@ var helpCommand = bot.registerCommand("help", (msg, args) => {
 			type: "rich",
 			description: "I am `Web Shot Bot`, a very simple bot. All I do is take screenshots of websites. I am currently in `" + bot.guilds.size + '` guilds!',
 			fields: [{name: "Commands", value: "`w$help` - This help command.\n`w$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`w$webshot <URL>` or `w$ws <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}],
-			color: 65280,
+			color: 3901635,
 			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/2e7016a63bbb8b18caffcea9f9ab54bb.webp?size=256"},
 			author: {name: "averysumner", url: "http://averysumner.net", icon_url: "https://cdn.discordapp.com/avatars/101475937589166080/2ebfd085d14e8446d8ae618d9382651c.webp?size=256"}
 		}
@@ -57,8 +69,8 @@ var inviteCommand = bot.registerCommand("invite", (msg, args) => {
 		embed: {
 			title: "Invite",
 			type: "rich",
-			description: "Invite me to your server with this link: https://discordapp.com/oauth2/authorize?client_id=234895303759757312&scope=bot&permissions=0",
-			color: 65280,
+			description: "Invite me to your server with this link: https://discordapp.com/oauth2/authorize?client_id=234895303759757312&scope=bot&permissions=104193089",
+			color: 3901635,
 			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/2e7016a63bbb8b18caffcea9f9ab54bb.webp?size=256"},
 		}
 	}
@@ -94,7 +106,7 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 			}
 			return content
 		}
-		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(hahanoip4u, "noip4u"); //Adds a base so CSS loads, and censors my IP address
+		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(/98\.203\.233\.130/g, "noip4u"); //Adds a base so CSS loads, and censors my IP address
 		var image = '';
 		var renderStream = webshot(cleaned, null, {
 			siteType: 'html'

@@ -23,6 +23,7 @@
   "homepage": "https://github.com/averysumner/WebShotBot#readme",
   "dependencies": {
     "eris": "^0.6.0",
+    "express": "^4.15.2",
     "node-rest-client": "^3.0.7",
     "node-tesseract": "^0.2.7",
     "ocr": "^3.3.76",
