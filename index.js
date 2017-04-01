@@ -41,7 +41,7 @@ var helpCommand = bot.registerCommand("help", (msg, args) => {
 			fields: [{name: "Commands", value: "`w$help` - This help command.\n`w$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`w$webshot <URL>` or `w$ws <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}],
 			color: 3901635,
 			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/2e7016a63bbb8b18caffcea9f9ab54bb.webp?size=256"},
-			author: {name: "averysumner", url: "http://averysumner.net", icon_url: "https://cdn.discordapp.com/avatars/101475937589166080/2ebfd085d14e8446d8ae618d9382651c.webp?size=256"}
+			author: {name: "Invite Me", url: "https://discordapp.com/oauth2/authorize?client_id=234895303759757312&scope=bot&permissions=104193089"}
 		}
 	}
 	return content
@@ -68,9 +68,9 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 		var content = {
 			content: "",
 			embed: {
-				title: "INVALID ARGUMENT",
+				title: "ERROR",
 				type: "rich",
-				description: "The `URL` argument of your command was invalid. Please try again.",
+				description: "One or more of the arguments passed was invalid, please try again.",
 				color: 16711680
 			}
 		}
@@ -78,18 +78,6 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 	}
 	//Requests page itself, instead of letting webshot do it, for the purpose of IP censoring
 	request(args[0], function(err, resp, body) {
-		if (body == undefined) {
-			var content = {
-				content: "",
-				embed: {
-					title: "SITE TOOK TOO LONG TO RESPOND",
-					type: "rich",
-					description: "The website `" + args[0] + "` took too long to respond.",
-					color: 16711680
-				}
-			}
-			return content
-		}
 		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(ipRegex, "noip4u"); //Adds a base so CSS loads, and censors my IP address
 		var image = '';
 		var renderStream = webshot(cleaned, null, {
