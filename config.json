@@ -1,5 +1,6 @@
 {
   "token" : "token_goes_here",
   "dbotstoken" : "dbots_token_goes_here",
-  "discordlisttoken" : "discordlist_token_goes_here"
+  "discordlisttoken" : "discordlist_token_goes_here",
+  "ipregex" : "ipregex_goes_here"
 }
