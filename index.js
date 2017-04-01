@@ -41,7 +41,7 @@ var helpCommand = bot.registerCommand("help", (msg, args) => {
 			fields: [{name: "Commands", value: "`w$help` - This help command.\n`w$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`w$webshot <URL>` or `w$ws <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}],
 			color: 3901635,
 			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/2e7016a63bbb8b18caffcea9f9ab54bb.webp?size=256"},
-			author: {name: "Invite Me", url: "https://discordapp.com/oauth2/authorize?client_id=234895303759757312&scope=bot&permissions=104193089"}
+			author: {name: "Click Here To Invite Me To Your Server", url: "https://discordapp.com/oauth2/authorize?client_id=234895303759757312&scope=bot&permissions=104193089"}
 		}
 	}
 	return content
