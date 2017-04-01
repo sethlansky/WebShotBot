@@ -27,7 +27,7 @@ function parseFlags(msg, flags, cb) {
 }
 
 function updateStats(bot) {
-  bot.editStatus("online", {name : "w$help - " + bot.guilds.size + " servers"})
+  bot.editStatus("online", {name : "w$help - " + bot.guilds.size + " guilds"})
   request({method : "POST", url : "https://bots.discord.pw/api/bots/" + bot.user.id + "/stats", headers : {"Authorization" : config.discordBotsToken}, json : {server_count : bot.guilds.size}})
   request({method : "POST", url : "https://bots.discordlist.net/api/", json : {token : config.discordListToken, servers : bot.guilds.size}})
 }
@@ -68,10 +68,22 @@ var inviteCommand = bot.registerCommand("invite", (msg, args) => {
 			type: "rich",
 			description: "Invite me to your server with this link: https://discordapp.com/oauth2/authorize?client_id=234895303759757312&scope=bot&permissions=104193089",
 			color: 3901635,
-			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/2e7016a63bbb8b18caffcea9f9ab54bb.webp?size=256"},
+			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/8d7fa53fcf3a50df10feb08da75b1e06.webp?size=256"},
 		}
 	}
 	return content
+})
+
+var evalCommand = bot.registerCommand("eval", (msg, args) => {
+	if (msg.author.id == '101475937589166080') {
+		try {
+			eval(args[0])
+		} catch(err) {
+			console.log('eval err')
+		}
+	} else {
+		console.log('you cant eval')
+	}
 })
 
 var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
