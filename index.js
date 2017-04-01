@@ -51,7 +51,7 @@ var helpCommand = bot.registerCommand("help", (msg, args) => {
 			title: "Web Shot Bot",
 			type: "rich",
 			description: "I am `Web Shot Bot`, a very simple bot. All I do is take screenshots of websites. I am currently in `" + bot.guilds.size + '` guilds!',
-			fields: [{name: "Commands", value: "`w$help` - This help command.\n`w$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`w$webshot <URL>` or `w$ws <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}],
+			fields: [{name: "Commands", value: "`w$help` - This help command.\n`w$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`w$webshot <URL>` or `w$ws <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}, {name: 'Flags', value: 'The `w$webshot` command can take `flags`, such as `--renderDelay <delay>`. This command would return an image of the website `https://google.com` five seconds after it has loaded: `w$webshot https://google.com --renderDelay 5`.'}],
 			color: 3901635,
 			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/8d7fa53fcf3a50df10feb08da75b1e06.webp?size=256"},
 			author: {name: "Click Here To Invite Me To Your Server", url: "https://discordapp.com/oauth2/authorize?client_id=234895303759757312&scope=bot&permissions=104193089"}
