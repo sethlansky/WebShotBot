@@ -3,6 +3,7 @@ var fs = require("fs")
 var webshot = require("webshot")
 var request = require("request")
 var stream = require('stream')
+var web = require('./web')
 
 var urlRegex = new RegExp(/^(ftp|http|https):\/\/[^ "]+$/)
 var config = JSON.parse(fs.readFileSync('config.json'))
@@ -21,15 +22,15 @@ function updateStats(bot) {
 
 bot.on("ready", function(){
   updateStats(bot)
-});
+})
 
 bot.on("guildCreate", function(){
   updateStats(bot)
-});
+})
 
 bot.on("guildLeave", function(){
   updateStats(bot)
-});
+})
 
 var helpCommand = bot.registerCommand("help", (msg, args) => {
 	var content = {
@@ -40,7 +41,7 @@ var helpCommand = bot.registerCommand("help", (msg, args) => {
 			description: "I am `Web Shot Bot`, a very simple bot. All I do is take screenshots of websites. I am currently in `" + bot.guilds.size + '` guilds!',
 			fields: [{name: "Commands", value: "`w$help` - This help command.\n`w$invite` - Returns an OAuth2 bot invite URL for inviting me to your guild.\n`w$webshot <URL>` or `w$ws <URL>` - Takes a screenshot of the specified URL. (URL must begin with `http://` or `https://`)"}],
 			color: 3901635,
-			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/2e7016a63bbb8b18caffcea9f9ab54bb.webp?size=256"},
+			thumbnail: {url: "https://cdn.discordapp.com/avatars/234895303759757312/8d7fa53fcf3a50df10feb08da75b1e06.webp?size=256"},
 			author: {name: "Click Here To Invite Me To Your Server", url: "https://discordapp.com/oauth2/authorize?client_id=234895303759757312&scope=bot&permissions=104193089"}
 		}
 	}
@@ -59,7 +60,7 @@ var inviteCommand = bot.registerCommand("invite", (msg, args) => {
 		}
 	}
 	return content
-});
+})
 
 var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 	console.log(msg.author.username + ': ' + args[0])
@@ -78,24 +79,38 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 	}
 	//Requests page itself, instead of letting webshot do it, for the purpose of IP censoring
 	request(args[0], function(err, resp, body) {
-		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(ipRegex, "noip4u"); //Adds a base so CSS loads, and censors my IP address
-		var image = '';
-		var renderStream = webshot(cleaned, null, {
-			siteType: 'html'
-		}) //Streams webshot so you don't have to save it to disk
-		renderStream.on('data', function(data) {
-			image += data.toString('binary')
-		})
-		renderStream.on('end', function() {
-			image = new Buffer(image, "binary"); //Convert to buffer so Eris can use it.
-			bot.createMessage(msg.channel.id, "Here's your webshot of `" + args[0] + "`", {
-				file: image,
-				name: 'webshot.png'
+		try{
+			var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(ipRegex, "noip4u"); //Adds a base so CSS loads, and censors my IP address
+			var image = '';
+			var renderStream = webshot(cleaned, null, {
+				siteType: 'html'
+			}) //Streams webshot so you don't have to save it to disk
+			renderStream.on('data', function(data) {
+				image += data.toString('binary')
 			})
-		})
+			renderStream.on('end', function() {
+				image = new Buffer(image, "binary"); //Convert to buffer so Eris can use it.
+				bot.createMessage(msg.channel.id, "Here's your webshot of `" + args[0] + "`", {
+					file: image,
+					name: 'webshot.png'
+				})
+			})
+		} catch (err) {
+			var content = {
+				content: "",
+				embed: {
+					title: "ERROR",
+					type: "rich",
+					description: "The specified website does not exist or returns an empty page.",
+					color: 16711680
+				}
+			}
+			bot.createMessage(msg.channel.id, content)
+		}
 	})
 })
 
-bot.registerCommandAlias('ws', 'webshot');
+bot.registerCommandAlias('ws', 'webshot')
 
-bot.connect();
+bot.connect()
+web.startWebServer(bot)
