@@ -90,7 +90,11 @@ var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 			}
 			return content
 		}
+<<<<<<< HEAD
 		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(ipRegex, "noip4u"); //Adds a base so CSS loads, and censors my IP address
+=======
+		var cleaned = '<base href="http://' + args[0].split("/")[2] + '">' + body.replace(nope, "noip4u"); //Adds a base so CSS loads, and censors my IP address
+>>>>>>> 386b6757f3d13417dde781271064852d7bc416ba
 		var image = '';
 		var renderStream = webshot(cleaned, null, {
 			siteType: 'html'
