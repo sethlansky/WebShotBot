@@ -1,5 +1,7 @@
 config\.json
 
+index\.js.\save
+
 node_modules/
 
 \.DS_Store
