@@ -74,18 +74,6 @@ var inviteCommand = bot.registerCommand("invite", (msg, args) => {
 	return content
 })
 
-var evalCommand = bot.registerCommand("eval", (msg, args) => {
-	if (msg.author.id == '101475937589166080') {
-		try {
-			eval(args[0])
-		} catch(err) {
-			console.log('eval err')
-		}
-	} else {
-		console.log('you cant eval')
-	}
-})
-
 var webshotCommand = bot.registerCommand("webshot", (msg, args) => {
 	//Catches invalid arguments
 	if (args.length === 0 || !urlRegex.test(args[0])) {
